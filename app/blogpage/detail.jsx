@@ -1,11 +1,23 @@
-import { View, Text, ScrollView, Button } from 'react-native'
+import { View, Text, ScrollView, Button, Pressable } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { openURL } from 'expo-linking'
+import { useLocalSearchParams } from 'expo-router'
 
-const blog1 = () => {
+const detail = () => {
+  const params = useLocalSearchParams();
+
+  // get blog details from firebase firestore by params id
+  console.log(params.id);
   return (
     <SafeAreaView className="bg-lightblue h-full">
+        <Pressable
+          onPress={() => router.pop()}
+          className="absolute top-5 left-5 z-10"
+        >
+          {/* Back Button Font Awesome Icon && Expo Vector Icon */}
+          <Text className="text-white text-2xl">Back</Text>
+        </Pressable>
         <ScrollView
           contentContainerStyle={{
             height: "100%"
@@ -62,4 +74,4 @@ const blog1 = () => {
   )
 }
 
-export default blog1
+export default detail
