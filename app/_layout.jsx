@@ -1,9 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native'
 import { useEffect } from "react";
 import { SplashScreen, Stack } from 'expo-router'
 import { useFonts } from 'expo-font'
-
-SplashScreen
 
 const RootLayout = () => {
   const [fontsLoaded, error] = useFonts({
@@ -32,7 +29,7 @@ const RootLayout = () => {
     <Stack>
         <Stack.Screen name="index" options={{ headerShown: false}}/>
         <Stack.Screen name="(tabs)" options={{ headerShown: false}}/>
-        <Stack.Screen name="blogpage/blog1" options={{ headerShown: false}}/>
+        <Stack.Screen name="blogpage/detail" options={{ headerShown: false}}/>
     </Stack>
   )
 }
