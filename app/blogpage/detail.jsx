@@ -3,14 +3,52 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { openURL } from 'expo-linking'
 import { useLocalSearchParams } from 'expo-router'
+import { db } from '../firebaseConfig'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { useState, useEffect } from 'react'
+
 
 const detail = () => {
   const params = useLocalSearchParams();
-
-  // get blog details from firebase firestore by params id
+  parameters = params.id;
   console.log(params.id);
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const q = query(collection(db, parameters), orderBy('order', 'asc'));
+        const querySnapshot = await getDocs(q);
+        const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(user => user.title || user.text || user.link !== null);
+        setUsers(usersList);
+      } catch (error) {
+        console.error('Error fetching users: ', error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+
   return (
     <SafeAreaView className="bg-lightblue h-full">
+      <View className="py-5 pd-4 justify-center items-center">
+        <Text className="text-4xl">Next.js ile Portföy Oluşturma</Text>
+        <ScrollView>
+          {users.map(user => (
+            <View key={user.id} className="bg-white p-5 m-5 rounded-lg shadow-md">
+              <Text className="text-2xl font-bold">{user.title}</Text>
+              {user.text !== undefined && (
+                <Text className="text-lg">{user.text}</Text>
+              )}
+              {user.link !== undefined && (
+              <Text className="text-blue-500 underline" onPress={() => openURL(user.link)}>Link</Text>
+              )}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
         <Pressable
           onPress={() => router.pop()}
           className="absolute top-5 left-5 z-10"
@@ -23,53 +61,6 @@ const detail = () => {
             height: "100%"
           }}
         />
-          <View className="items-center justify-center pt-10 flex-col text-justify pb-10">
-            <ScrollView className="w-full h-full">
-                <Text className="text-3xl font-bold ">Next.js ile Portföy Oluşturma</Text>
-                <Text className="text-lg font-semibold">Neden Portfolyo Oluşturmalıyım</Text>
-                <Text className=" ">Portfolyolar kendi yeteneklerimizi insanlara göstermek için en güzel yollardan biridir.
-                    İşverenler ve müşterilerin sizi tanımasında önemli rol oynarlar. Kendimiz hakkındaki önemli bilgileri,
-                    geçmiş projeleri, tecrübelerimizi göstermemize yardımcı olur. Bu nedenlerden dolayı, herhangi bir alanda çalışan biri için portföy oluşturmak oldukça önemlidir.</Text>
-                    <Text className="text-white text-2xl pt-3">Neden Nextjs</Text>
-                <Text className="font-light">Next.js, geliştiricilere hızlı ve verimli bir şekilde çalışma imkanı sağlar.
-                    Hızlı başlangıç için hazır bir yapı sunar ve kodunuzu kolayca düzenlemenize olanak tanır.
-                    Bu, portföyünüzü hızlı bir şekilde oluşturmanıza ve güncellemenize olanak sağlar.</Text>
-                <Text className="text-white text-2xl pt-3">Başlangıç</Text>
-                <Text className="font-light">İlk önce nodejs yüklemeliyiz şu siteden:</Text>
-                <Button onPress={() => openURL("https://nodejs.org/en")} className="flex-1" title="node.js"/> 
-                <Text className="font-light"> Daha Sonra terminale &apos;npm create-next-app&apos; yazıp projeyi oluşturabiliriz.
-                    Bunları yaptıktan sonra gerekli kütüphaneleri &apos;npm i&apos; ile indirmemiz gerekiyor.
-                    Bu işlem biraz sürebilir. İndirmeler tamamlandıktan sonra terminale &apos;npm run dev &apos; yazarak development serverımızı kurabiliriz.
-                </Text>
-                <Text className="text-white text-2xl pt-3">Components</Text>
-                <Text className="font-light">Componentlarda bir tane Navbar componentı var.
-                    Navbar sayfalar arası navigasyonu sağlıyor. Navbarda her sayfanın linkleri,
-                    ana sayfa logosu, benim Github ve Linkedin hesaplarımın logoları ve linkleri var</Text>
-                <Text className="text-white text-2xl pt-3">Sayfalar</Text>
-                <Text>Ana Sayfa</Text>
-                <Text className="font-light">Ana sayfa her sitenin başlangıç sayfasıdır. Genel bilgileri göstermek için kullanabilirsiniz.
-                    Ana sayfada portföyüme erişebileceğiniz &apos;View My Work&apos; butonu ve iletişime geçebileceğiniz &apos;Contact&apos; butonu var.</Text>
-                <Text>Blog Sayfası</Text>
-                <Text className="font-light">Blog sayfası bilgilerimizi paylaşabileceğimiz, düşüncelerimizi aktarabileceğimiz blog sayfası. Yazdığım bloglara erişebileceğiniz linkler bu sayfada. </Text>
-                <Text>Portfolio Sayfası</Text>
-                <Text className="font-light">Portfolio sayfası yaptığımız projeleri göstermek için kullabileceğimiz bir sayfa.
-                    Ben önceden yaptığım projeyi tanıtan Youtube videosu koydum. </Text>
-                <Text>Hakkında Sayfası</Text>
-                <Text className="font-light">Hakkında sayfası sitenizin en önemli sayfalardan biri.
-                    Kendinizi diğer insanlara tanıtabileceğiniz, bilgilerinizi gösterebileceğiniz, geçmiş tecrübelerinizi aktarabileceğiniz sayfa.
-                    Ben bu sayfaya özgeçmişimi ve kendimi anlatan bir yazı yazdım.</Text>
-                <Text>İletişim Sayfası</Text>
-                <Text className="font-light">İletişim sayfası sitenize giren kişilerin sizinle iletişime geçmesi için gereken araçları verebileceğiniz bir sayfa.
-                    Ben bu sayfaya bir email gönderen bir araç geliştirmeyi planlıyorum.</Text>
-                <Text className="text-white text-xl pt-3">Yayınlama</Text>
-                <Text className="font-light">Kodu Github&apos;a attıktan sonra Vercel platformuyla sitemizi yayınlayabiliriz.
-                    İlk olarak Vercel hesabımızı github hesabımızla birleştirmemiz gerekiyor.
-                    Daha sonra Github repositorymizi içe aktardıktan sonra kolay bir şekilde Vercel&apos;de yayınlayabiliriz.</Text>
-                <Button onPress={() => openURL("https://harun-portfolio.vercel.app/")} className="flex-1" title="Buradan Websitesine"/>   
-                <Button onPress={() => openURL("https://github.com/aharunu/Harun-Portfolio")} className="flex-1" title="Buradan Github Repositorysine"/>   
-                <Text className="font-light">ulaşabilirsiniz.</Text>
-            </ScrollView>
-          </View>
     </SafeAreaView>
   )
 }

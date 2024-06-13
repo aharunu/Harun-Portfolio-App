@@ -9,7 +9,7 @@ const Blog = () => {
   // get blogs from firebase firestore
   const blogs = [
     {
-      id: 1,
+      id: "blog",
       title: "Next.js ile Portfolio Oluşturma",
       content: "Next.js ile portfolio oluşturmak için gerekli adımları bu blog yazımızda bulabilirsiniz.",
       date: "12.05.2021",
@@ -17,7 +17,7 @@ const Blog = () => {
       image: images.blog
     },
     {
-      id: 2,
+      id: "blog2",
       title: "Next.js ile Portfolio Oluşturma",
       content: "Next.js ile portfolio oluşturmak için gerekli adımları bu blog yazımızda bulabilirsiniz.",
       date: "12.05.2021",
